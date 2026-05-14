@@ -14,6 +14,43 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Create settings.gradle
+        run: |
+          cat <<EOF > settings.gradle
+          rootProject.name = '${{ github.event.repository.name }}'
+          EOF
+
+      - name: Create build.gradle
+        run: |
+          cat <<EOF > build.gradle
+          plugins {
+              id 'java'
+          }
+
+          group = 'com.example'
+          version = '1.0'
+
+          repositories {
+              mavenCentral()
+          }
+
+          dependencies {
+              testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+          }
+
+          test {
+              useJUnitPlatform()
+          }
+
+          jar {
+              manifest {
+                  attributes(
+                      'Main-Class': 'Runner'
+                  )
+              }
+          }
+          EOF
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 

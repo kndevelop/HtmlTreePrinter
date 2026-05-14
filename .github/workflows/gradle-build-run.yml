@@ -1,0 +1,33 @@
+name: Build Run
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'URL'
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+       - name: Checkout code
+         uses: actions/checkout@v4
+
+       - name: Set up Java
+         uses: actions/setup-java@v4
+         with:
+            java-version: '21'
+            distribution: 'temurin'
+
+       - name: Grant execute permission for gradlew
+         run: chmod +x gradlew
+
+       - name: Build with Gradle
+         run: ./gradlew build
+
+       - name: Run jar
+         run: |
+           java -jar build/libs/*.jar \
+             "${{ github.event.inputs.url }}"

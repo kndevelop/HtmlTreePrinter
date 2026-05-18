@@ -28,7 +28,7 @@ public class HtmlTreePrinter {
             // -----------------------------
             // 「選考・企業概要」タブをクリック
             // -----------------------------
-            page.locator("text=選考・企業概要").click();
+            page.locator("button:has-text('選考・企業概要')").click();
 
             // 描画待ち
             page.waitForTimeout(2000);

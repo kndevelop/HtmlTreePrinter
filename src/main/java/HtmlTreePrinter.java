@@ -15,7 +15,7 @@ public class HtmlTreePrinter {
 
             Browser browser = playwright.chromium().launch(
                 new BrowserType.LaunchOptions()
-                    .setHeadless(false)
+                    .setHeadless(true)
             );
 
             Page page = browser.newPage();

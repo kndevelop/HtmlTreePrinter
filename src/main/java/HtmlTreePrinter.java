@@ -1,5 +1,6 @@
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.*;
+import com.microsoft.playwright.*;
 import java.util.List;
 
 public class HtmlTreePrinter {
@@ -10,10 +11,19 @@ public class HtmlTreePrinter {
     public static void main(String[] args) throws Exception {
         String url = args[0];
 
-        Document doc = Jsoup.connect(url).get();
+        // Playwrightを使用してページを取得
+        try (Playwright playwright = Playwright.create()) {
+            Browser browser = playwright.chromium().launch();
+            Page page = browser.newPage();
+            page.navigate(url);
+            String html = page.content();
+            browser.close();
 
-        // ルートから開始
-        printNode(doc, "", true, 0);
+            Document doc = Jsoup.parse(html);
+
+            // ルートから開始
+            printNode(doc, "", true, 0);
+        }
     }
 
     static void printNode(Node node, String prefix, boolean isLast, int depth) {

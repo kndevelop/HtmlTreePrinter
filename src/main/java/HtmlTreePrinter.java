@@ -62,12 +62,12 @@ public class HtmlTreePrinter {
         page.navigate(config.loginPageUrl);
 
         String userSelector =
-            "input[name='" + config.userNameField + "'], 
-            input[id='" + config.userNameField + "']";
+            "input[name='" + config.userNameField + "'], " +
+            "input[id='" + config.userNameField + "']";
 
         String passwordSelector =
-            "input[name='" + config.passwordField + "'],
-            input[id='" + config.passwordField + "']";
+            "input[name='" + config.passwordField + "'], " +
+            "input[id='" + config.passwordField + "']";
 
         // ログイン情報を入力
         page.fill(userSelector, config.userName);

@@ -67,6 +67,7 @@ public class HtmlTreePrinter {
         log.info("ログインページURL: {}", config.getLoginPageUrl());
 
         page.navigate(config.getLoginPageUrl());
+        log.info("navigate完了");
 
         String userSelector =
             "input[name='" + config.getUserNameField() + "'], " +
@@ -79,13 +80,14 @@ public class HtmlTreePrinter {
         // ログイン情報を入力
         page.fill(userSelector, config.getUserName());
         page.fill(passwordSelector, config.getPassword());
+        log.info("ユーザー入力完了");
 
         // ログインボタンをクリック
         page.click("button[type='submit']");
 
         // ログイン完了待機
-        page.waitForNavigation(() -> {});
-
+        page.waitForLoadState();
+        log.info("ログイン完了");
         System.out.println("ログイン後URL: " + page.url());
 
     }

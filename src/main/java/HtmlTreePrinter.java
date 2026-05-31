@@ -51,8 +51,7 @@ public class HtmlTreePrinter {
 
             // HTML取得
             String html = page.content();
-
-            */
+*/
 
             browser.close();
 
@@ -87,6 +86,7 @@ public class HtmlTreePrinter {
 
         // ログイン完了待機
         page.waitForLoadState();
+
         log.info("ログイン完了");
         System.out.println("ログイン後URL: " + page.url());
 

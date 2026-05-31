@@ -2,14 +2,20 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.*;
 import com.microsoft.playwright.*;
 import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class HtmlTreePrinter {
 
     static final int MAX_DEPTH = 6;
 
+    @Data
     public static class Config {
-        public String firstPageUrl;
-        public String loginRequired;
+        public String loginPageUrl;
+        public String userNameField;
+        public String passwordField;
         public String userName;
         public String password;
     }
@@ -57,27 +63,27 @@ public class HtmlTreePrinter {
 
     static void login(Page page, Config config) throws Exception {
 
-        System.out.println(config.loginPageUrl);
+        log.info("ログインページURL: {}", config.getLoginPageUrl());
 
-        page.navigate(config.loginPageUrl);
+        page.navigate(config.getLoginPageUrl());
 
         String userSelector =
-            "input[name='" + config.userNameField + "'], " +
-            "input[id='" + config.userNameField + "']";
+            "input[name='" + config.getUserNameField() + "'], " +
+            "input[id='" + config.getUserNameField() + "']";
 
         String passwordSelector =
-            "input[name='" + config.passwordField + "'], " +
-            "input[id='" + config.passwordField + "']";
+            "input[name='" + config.getPasswordField() + "'], " +
+            "input[id='" + config.getPasswordField() + "']";
 
         // ログイン情報を入力
-        page.fill(userSelector, config.userName);
-        page.fill(passwordSelector, config.password);
+        page.fill(userSelector, config.getUserName());
+        page.fill(passwordSelector, config.getPassword());
 
         // ログインボタンをクリック
         page.click("button[type='submit']");
 
         // ログイン完了待機
-        page.waitForNavigation();
+        page.waitForNavigation(() -> {});
 
         System.out.println("ログイン後URL: " + page.url());
 

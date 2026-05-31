@@ -43,12 +43,18 @@ jobs:
         run: |
           case "${{ inputs.url }}" in
             AIRDO)
-              echo "CONFIG_JSON=$AIRDO_SETTING" >> $GITHUB_ENV
+              echo "CONFIG_JSON=$AIRDO_SETTING"
               ;;
             RECRUIT_AGENT)
-              echo "CONFIG_JSON=$RECRUIT_AGENT_SETTING" >> $GITHUB_ENV
+              echo "CONFIG_JSON=$RECRUIT_AGENT_SETTING"
               ;;
           esac
+
+          {
+            echo "CONFIG_JSON<<EOF"
+            echo "$CONFIG"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
 
       - name: Build with Gradle
         run: ./gradlew build

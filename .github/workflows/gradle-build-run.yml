@@ -36,10 +36,23 @@ jobs:
             libnss3 \
             libasound2t64
 
+      - name: Set config
+        env:
+          AIRDO_SETTING: ${{ secrets.AIRDO_SETTING }}
+          RECRUIT_AGENT_SETTING: ${{ secrets.RECRUIT_AGENT_SETTING }}
+        run: |
+          case "${{ inputs.url }}" in
+            AIRDO)
+              echo "CONFIG_JSON=$AIRDO_SETTING" >> $GITHUB_ENV
+              ;;
+            RECRUIT_AGENT)
+              echo "CONFIG_JSON=$RECRUIT_AGENT_SETTING" >> $GITHUB_ENV
+              ;;
+          esac
+
       - name: Build with Gradle
         run: ./gradlew build
 
       - name: Run jar
         run: |
-          java -jar build/libs/*.jar \
-            "${{ github.event.inputs.url }}"
+          java -jar build/libs/*.jar

@@ -22,8 +22,7 @@ public class HtmlTreePrinter {
 
     public static void main(String[] args) throws Exception {
 
-        String serviceName = args[0];
-        String serviceSetting = System.getenv(serviceName + "_SETTING");
+        String serviceSetting = System.getenv("CONFIG_SETTING");
         Config config = new ObjectMapper().readValue(serviceSetting, Config.class);
 
         try (Playwright playwright = Playwright.create()) {

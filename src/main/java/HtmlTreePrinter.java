@@ -18,6 +18,7 @@ public class HtmlTreePrinter {
         public String passwordField;
         public String userName;
         public String password;
+        public String targetUrl;
     }
 
     public static void main(String[] args) throws Exception {

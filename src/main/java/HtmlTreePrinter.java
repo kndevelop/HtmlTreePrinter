@@ -7,9 +7,18 @@ public class HtmlTreePrinter {
 
     static final int MAX_DEPTH = 6;
 
+    public static class Config {
+        public String firstPageUrl;
+        public String loginRequired;
+        public String userName;
+        public String password;
+    }
+
     public static void main(String[] args) throws Exception {
 
-        String url = args[0];
+        String serviceName = args[0];
+        String serviceSetting = System.getenv(serviceName + "_SETTING");
+        Config config = new ObjectMapper().readValue(serviceSetting, Config.class);
 
         try (Playwright playwright = Playwright.create()) {
 
@@ -20,7 +29,10 @@ public class HtmlTreePrinter {
 
             Page page = browser.newPage();
 
-            page.navigate(url);
+            login(page, config);
+
+/*
+            page.navigate(config.targetUrl);
 
             // 初期ロード待機
             page.waitForLoadState();
@@ -30,18 +42,45 @@ public class HtmlTreePrinter {
             // -----------------------------
             page.locator("button:has-text('選考・企業概要')").click();
 
-            // 描画待ち
-            page.waitForTimeout(2000);
-
             // HTML取得
             String html = page.content();
 
+            */
+
             browser.close();
 
-            Document doc = Jsoup.parse(html);
+            //Document doc = Jsoup.parse(html);
+            //printNode(doc, "", true, 0);
 
-            printNode(doc, "", true, 0);
         }
+    }
+
+    static void login(Page page, Config config) throws Exception {
+
+        System.out.println(config.loginPageUrl);
+
+        page.navigate(config.loginPageUrl);
+
+        String userSelector =
+            "input[name='" + config.userNameField + "'], 
+            input[id='" + config.userNameField + "']";
+
+        String passwordSelector =
+            "input[name='" + config.passwordField + "'],
+            input[id='" + config.passwordField + "']";
+
+        // ログイン情報を入力
+        page.fill(userSelector, config.userName);
+        page.fill(passwordSelector, config.password);
+
+        // ログインボタンをクリック
+        page.click("button[type='submit']");
+
+        // ログイン完了待機
+        page.waitForNavigation();
+
+        System.out.println("ログイン後URL: " + page.url());
+
     }
 
     static void printNode(Node node, String prefix, boolean isLast, int depth) {

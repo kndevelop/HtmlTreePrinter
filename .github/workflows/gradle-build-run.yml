@@ -4,8 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       url:
-        description: 'URL'
+        description: 'サイトを選択してください'
         required: true
+        type: choice
+        options:
+          - AIRDO
+          - RECRUIT_AGENT
 
 jobs:
   build:

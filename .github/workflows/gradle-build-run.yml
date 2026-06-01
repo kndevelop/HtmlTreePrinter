@@ -59,6 +59,9 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
+      - name: Create screenshots directory
+        run: mkdir -p screenshots
+
       - name: Run jar
         run: |
           java -jar build/libs/*.jar

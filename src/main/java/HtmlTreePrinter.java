@@ -16,6 +16,7 @@ public class HtmlTreePrinter {
         public String loginPageUrl;
         public String userNameField;
         public String passwordField;
+        public String loginBtn;
         public String userName;
         public String password;
         public String targetUrl;
@@ -82,8 +83,17 @@ public class HtmlTreePrinter {
         log.info("ユーザー入力完了");
 
         // ログインボタンをクリック
-        page.click("button[type='submit']");
+        String loginSelector =
+            "button[name='" + config.getLoginBtn() + "'], " +
+            "button[id='" + config.getLoginBtn() + "']";
+        page.locator(loginSelector).click();
 
+        page.waitForTimeout(3000);
+
+        page.screenshot(
+            new Page.ScreenshotOptions()
+                .setPath(Paths.get("after-login.png"))
+        );
         // ログイン完了待機
         page.waitForLoadState();
 

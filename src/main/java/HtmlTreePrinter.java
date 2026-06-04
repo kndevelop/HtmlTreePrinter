@@ -34,11 +34,11 @@ public class HtmlTreePrinter {
         String siteName = args[0];
 
         Config loginConfig = new ObjectMapper().readValue(
-            Paths.get("src/main/resources/config/" + siteName + "_LOGIN.json").toFile(),
+            Paths.get("src/main/resources/config/json/" + siteName + "_LOGIN.json").toFile(),
             Config.class
         );
         Config operateConfig = new ObjectMapper().readValue(
-            Paths.get("src/main/resources/config/" + siteName + "_OPERATE.json").toFile(),
+            Paths.get("src/main/resources/config/json/" + siteName + "_OPERATE.json").toFile(),
             Config.class
         );
         

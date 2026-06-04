@@ -3,7 +3,7 @@
     {
       "type": "input",
       "selector": "#mail-pc-1",
-      "env": "USER_NAME"
+      "env": "LOGIN_ID"
     },
     {
       "type": "input",

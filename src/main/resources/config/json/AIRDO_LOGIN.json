@@ -1,6 +1,10 @@
 {
   "steps": [
     {
+      "type": "navigate",
+      "url": "https://www.airdo.jp/ap/myairdo/cus101/cus101001"
+    },
+    {
       "type": "input",
       "selector": "#mail-pc-1",
       "env": "LOGIN_ID"

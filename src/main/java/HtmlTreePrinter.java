@@ -37,11 +37,13 @@ public class HtmlTreePrinter {
             Paths.get("src/main/resources/config/json/" + siteName + "_LOGIN.json").toFile(),
             Config.class
         );
+        /*
         Config operateConfig = new ObjectMapper().readValue(
             Paths.get("src/main/resources/config/json/" + siteName + "_OPERATE.json").toFile(),
             Config.class
         );
-        
+        */
+       
         try (Playwright playwright = Playwright.create()) {
 
             Browser browser = playwright.chromium().launch(

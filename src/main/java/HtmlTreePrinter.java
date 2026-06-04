@@ -14,17 +14,13 @@ public class HtmlTreePrinter {
 
     @Data
     public static class Config {
-        public String loginPageUrl;
-        public String userNameField;
-        public String passwordField;
-        public String loginBtn;
-        public String userName;
-        public String password;
-        public String targetUrl;
+        public List<Step> Steps;
     }
 
     @Data
-    public class Step {
+    public static class Step {
+        private String env;
+        private String filename;
         private String type;
         private String url;
         private String selector;
@@ -36,21 +32,16 @@ public class HtmlTreePrinter {
     public static void main(String[] args) throws Exception {
 
         String siteName = args[0];
-        try {
-            Config loginConfig = new ObjectMapper().readValue(
-                Paths.get("src/main/resources/config/" + siteName + "_LOGIN.json").toFile(),
-                Config.class
-            );
-            Config operateConfig = new ObjectMapper().readValue(
-                Paths.get("src/main/resources/config/" + siteName + "_OPERATE.json").toFile(),
-                Config.class
-            );
-            
-        } catch (Exception e) {
-            log.info("設定ファイルの読み込みに失敗しました", e);
-            System.exit(1);
-        }
 
+        Config loginConfig = new ObjectMapper().readValue(
+            Paths.get("src/main/resources/config/" + siteName + "_LOGIN.json").toFile(),
+            Config.class
+        );
+        Config operateConfig = new ObjectMapper().readValue(
+            Paths.get("src/main/resources/config/" + siteName + "_OPERATE.json").toFile(),
+            Config.class
+        );
+        
         try (Playwright playwright = Playwright.create()) {
 
             Browser browser = playwright.chromium().launch(
@@ -85,6 +76,7 @@ public class HtmlTreePrinter {
         }
     }
 
+/*
     static void login(Page page, Config config) throws Exception {
 
         log.info("ログインページURL: {}", config.getLoginPageUrl());
@@ -124,7 +116,7 @@ public class HtmlTreePrinter {
         System.out.println("ログイン後URL: " + page.url());
 
     }
-
+*/
 
     static void scraping(Page page, Config config) throws Exception {
         for (Step step : config.getSteps()) {
@@ -136,7 +128,9 @@ public class HtmlTreePrinter {
                     break;
 
                 case "input":
-                    if (step.getEnv()) {
+                    String value;
+
+                    if (step.getEnv() != null) {
                         value = System.getenv(step.getEnv());
                     } else {
                         value = step.getValue();
@@ -151,10 +145,10 @@ public class HtmlTreePrinter {
                     break;
 
                 case "extract":
-                    String value = page.locator(step.getSelector())
+                    String content = page.locator(step.getSelector())
                                     .textContent();
 
-                    System.out.println(step.getName() + "=" + value);
+                    System.out.println(step.getName() + "=" + content);
                     break;
 
                 case "wait":

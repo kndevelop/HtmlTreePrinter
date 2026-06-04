@@ -1,0 +1,44 @@
+{
+  "steps": [
+    {
+      "type": "navigate",
+      "url": "https://www.airdo.jp/ap/myairdo/cus101/cus101001"
+    },
+    {
+      "type": "input",
+      "selector": "#mail-pc-1",
+      "value": "${USER_NAME}"
+    },
+    {
+      "type": "input",
+      "selector": "#password-1",
+      "value": "${PASSWORD}"
+    },
+    {
+      "type": "click",
+      "selector": "#login"
+    },
+    {
+      "type": "wait",
+      "milliseconds": 3000
+    },
+    {
+      "type": "navigate",
+      "url": "https://example.com/search"
+    },
+    {
+      "type": "input",
+      "selector": "#keyword",
+      "value": "東京"
+    },
+    {
+      "type": "click",
+      "selector": "#searchButton"
+    },
+    {
+      "type": "extract",
+      "name": "resultCount",
+      "selector": "#resultCount"
+    }
+  ]
+}

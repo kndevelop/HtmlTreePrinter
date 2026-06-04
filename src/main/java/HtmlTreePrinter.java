@@ -23,11 +23,33 @@ public class HtmlTreePrinter {
         public String targetUrl;
     }
 
+    @Data
+    public class Step {
+        private String type;
+        private String url;
+        private String selector;
+        private String value;
+        private String name;
+        private Long milliseconds;
+    }
+
     public static void main(String[] args) throws Exception {
 
-        String serviceSetting = System.getenv("CONFIG_SETTING");
-        System.out.println("CONFIG_SETTING: " + serviceSetting);
-        Config config = new ObjectMapper().readValue(serviceSetting, Config.class);
+        String siteName = args[0];
+        try {
+            Config loginConfig = new ObjectMapper().readValue(
+                Paths.get("src/main/resources/config/" + siteName + "_LOGIN.json").toFile(),
+                Config.class
+            );
+            Config operateConfig = new ObjectMapper().readValue(
+                Paths.get("src/main/resources/config/" + siteName + "_OPERATE.json").toFile(),
+                Config.class
+            );
+            
+        } catch (Exception e) {
+            log.info("設定ファイルの読み込みに失敗しました", e);
+            System.exit(1);
+        }
 
         try (Playwright playwright = Playwright.create()) {
 
@@ -38,7 +60,7 @@ public class HtmlTreePrinter {
 
             Page page = browser.newPage();
 
-            login(page, config);
+            scraping(page, loginConfig);
 
 /*
             page.navigate(config.targetUrl);
@@ -101,6 +123,54 @@ public class HtmlTreePrinter {
         log.info("ログイン完了");
         System.out.println("ログイン後URL: " + page.url());
 
+    }
+
+
+    static void scraping(Page page, Config config) throws Exception {
+        for (Step step : config.getSteps()) {
+
+            switch (step.getType()) {
+
+                case "navigate":
+                    page.navigate(step.getUrl());
+                    break;
+
+                case "input":
+                    if (step.getEnv()) {
+                        value = System.getenv(step.getEnv());
+                    } else {
+                        value = step.getValue();
+                    }
+                    page.locator(step.getSelector())
+                        .fill(value);
+                    break;
+
+                case "click":
+                    page.locator(step.getSelector())
+                        .click();
+                    break;
+
+                case "extract":
+                    String value = page.locator(step.getSelector())
+                                    .textContent();
+
+                    System.out.println(step.getName() + "=" + value);
+                    break;
+
+                case "wait":
+                    page.waitForTimeout(
+                        step.getMilliseconds()
+                    );
+                    break;
+
+                case "screenshot":
+                    page.screenshot(
+                        new Page.ScreenshotOptions()
+                            .setPath(Paths.get(step.getFilename()))
+                    );
+                    break;
+            }
+        }
     }
 
     static void printNode(Node node, String prefix, boolean isLast, int depth) {

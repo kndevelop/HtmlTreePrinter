@@ -3,7 +3,7 @@ name: Build Run
 on:
   workflow_dispatch:
     inputs:
-      url:
+      site:
         description: 'サイトを選択してください'
         required: true
         type: choice
@@ -38,23 +38,24 @@ jobs:
 
       - name: Set config
         env:
-          AIRDO_SETTING: ${{ secrets.AIRDO_SETTING }}
-          RECRUIT_AGENT_SETTING: ${{ secrets.RECRUIT_AGENT_SETTING }}
+          AIRDO_LOGIN_ID: ${{ secrets.AIRDO_LOGIN_ID }}
+          AIRDO_PASSWORD: ${{ secrets.AIRDO_PASSWORD }}
+          RECRUIT_AGENT_LOGIN_ID: ${{ secrets.RECRUIT_AGENT_LOGIN_ID }}
+          RECRUIT_AGENT_PASSWORD: ${{ secrets.RECRUIT_AGENT_PASSWORD }}
         run: |
-          case "${{ inputs.url }}" in
+          case "${{ inputs.site }}" in
             AIRDO)
-              CONFIG="$AIRDO_SETTING"
+              LOGIN_ID="$AIRDO_LOGIN_ID"
+              PASSWORD="$AIRDO_PASSWORD"
               ;;
             RECRUIT_AGENT)
-              CONFIG="$RECRUIT_AGENT_SETTING"
+              LOGIN_ID="$RECRUIT_AGENT_LOGIN_ID"
+              PASSWORD="$RECRUIT_AGENT_PASSWORD"
               ;;
           esac
 
-          {
-            echo "CONFIG_SETTING<<EOF"
-            echo "$CONFIG"
-            echo "EOF"
-          } >> "$GITHUB_ENV"
+          echo "LOGIN_ID=$LOGIN_ID" >> $GITHUB_ENV
+          echo "PASSWORD=$PASSWORD" >> $GITHUB_ENV
 
       - name: Build with Gradle
         run: ./gradlew build
@@ -62,9 +63,16 @@ jobs:
       - name: Create screenshots directory
         run: mkdir -p screenshots
 
+      - name: Install Japanese Fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk
+          fc-cache -fv
+
       - name: Run jar
         run: |
-          java -jar build/libs/*.jar
+          java -jar build/libs/*.jar \
+            "${{ github.event.inputs.site }}"
       
       - name: Upload Screenshot
         uses: actions/upload-artifact@v4

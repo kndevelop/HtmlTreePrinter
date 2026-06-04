@@ -16,7 +16,7 @@
     },
     {
       "type": "click",
-      "selector": "#login"
+      "selector": "button[name='login']"
     },
     {
       "type": "screenshot",

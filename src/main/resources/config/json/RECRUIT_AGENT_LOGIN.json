@@ -1,0 +1,26 @@
+{
+  "steps": [
+    {
+      "type": "navigate",
+      "url": "https://mypage.r-agent.com/rikupon/login"
+    },
+    {
+      "type": "input",
+      "selector": "#mainEmail",
+      "env": "LOGIN_ID"
+    },
+    {
+      "type": "input",
+      "selector": "#passwd",
+      "env": "PASSWORD"
+    },
+    {
+      "type": "click",
+      "selector": "#sbmbtn"
+    },
+    {
+      "type": "screenshot",
+      "filename": "after-login.png"
+    }
+  ]
+}

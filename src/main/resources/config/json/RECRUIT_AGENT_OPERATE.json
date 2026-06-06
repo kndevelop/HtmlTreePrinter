@@ -2,21 +2,21 @@
   "steps": [
     {
       "type": "navigate",
-      "url": "https://www.airdo.jp/ap/myairdo/cus101/cus101001"
+      "url": "https://mypage.r-agent.com/rikupon/login"
     },
     {
       "type": "input",
-      "selector": "#mail-pc-1",
+      "selector": "#mainEmail",
       "value": "${USER_NAME}"
     },
     {
       "type": "input",
-      "selector": "#password-1",
+      "selector": "#passwd1",
       "value": "${PASSWORD}"
     },
     {
       "type": "click",
-      "selector": "#login"
+      "selector": "#sbmbtn"
     },
     {
       "type": "wait",

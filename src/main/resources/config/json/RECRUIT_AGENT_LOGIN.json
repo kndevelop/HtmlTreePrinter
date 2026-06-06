@@ -11,7 +11,7 @@
     },
     {
       "type": "input",
-      "selector": "#passwd",
+      "selector": "#passwordText",
       "env": "PASSWORD"
     },
     {

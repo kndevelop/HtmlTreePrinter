@@ -9,7 +9,7 @@ import HtmlTreePrinter.Step;
 @Slf4j
 public class OperationService {
 
-    static void scraping(Page page, Config config) throws Exception {
+    static void scraping(Page page, String siteName, Config config) throws Exception {
         for (Step step : config.getSteps()) {
             switch (step.getType()) {
                 case "navigate":
@@ -17,9 +17,10 @@ public class OperationService {
                     break;
 
                 case "input":
-                    input(page, step.getEnv(), 
-                          step.getValue(), 
-                          step.getSelector());
+                    input(page, siteName,
+                        step.getEnv(), 
+                        step.getValue(), 
+                        step.getSelector());
                     break;
 
                 case "click":
@@ -45,9 +46,17 @@ public class OperationService {
         page.navigate(url);
     }
 
-    static void input(Page page, String env, String value, String selector) {
+    static void input(
+        Page page,
+        String siteName,
+        String env,
+        String value,
+        String selector
+    ) {
         page.locator(selector)
-            .fill(env != null ? System.getenv(env) : value);
+            .fill(env != null
+                  ? System.getenv(siteName + "_" + env)
+                  : value);
     }
 
     static void click(Page page, String selector) {

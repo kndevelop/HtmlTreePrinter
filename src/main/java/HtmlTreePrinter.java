@@ -16,7 +16,7 @@ public class HtmlTreePrinter {
             Paths.get("src/main/resources/config/json/" + siteName + "_LOGIN.json").toFile(),
             Config.class
         );
-        
+
         try (Playwright playwright = Playwright.create()) {
 
             Browser browser = playwright.chromium().launch(
@@ -24,9 +24,9 @@ public class HtmlTreePrinter {
                     .setHeadless(true)
             );
             Page page = browser.newPage();
-            
+
             OperationService operationService = new OperationService();
-            operationService.scraping(page, loginConfig);
+            operationService.scraping(page, siteName ,loginConfig);
             browser.close();
 
         }

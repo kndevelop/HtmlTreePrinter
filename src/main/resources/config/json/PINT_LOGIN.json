@@ -2,21 +2,21 @@
   "steps": [
     {
       "type": "navigate",
-      "url": "https://mypage.r-agent.com/rikupon/login"
+      "url": "https://pintinc.jp/login"
     },
     {
       "type": "input",
-      "selector": "#mainEmail",
+      "selector": "#id_email",
       "env": "LOGIN_ID"
     },
     {
       "type": "input",
-      "selector": "#passwordText",
+      "selector": "#id_password",
       "env": "PASSWORD"
     },
     {
       "type": "click",
-      "selector": "#sbmbtn"
+      "selector": "button.login"
     },
     {
       "type": "wait",

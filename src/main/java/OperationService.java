@@ -53,6 +53,8 @@ public class OperationService {
         String value,
         String selector
     ) {
+        System.out.println(page.url());
+        page.waitForSelector(selector);
         page.locator(selector)
             .fill(env != null
                   ? System.getenv(siteName + "_" + env)
@@ -60,8 +62,8 @@ public class OperationService {
     }
 
     static void click(Page page, String selector) {
-        page.locator(selector)
-            .click();
+        page.waitForSelector(selector);
+        page.locator(selector).click();
     }
 
     static void extract(Page page, String name, String selector) {

@@ -5,6 +5,10 @@
       "url": "https://pintinc.jp/login"
     },
     {
+      "type": "wait",
+      "milliseconds": "3000"
+    },
+    {
       "type": "input",
       "selector": "#id_email",
       "env": "LOGIN_ID"

@@ -1,7 +1,6 @@
 import com.microsoft.playwright.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import java.nio.file.Paths;
 import HtmlTreePrinter.Config;
 
 
@@ -13,7 +12,7 @@ public class HtmlTreePrinter {
         String siteName = args[0];
 
         Config loginConfig = new ObjectMapper().readValue(
-            Paths.get("src/main/resources/config/json/" + siteName + "_LOGIN.json").toFile(),
+            HtmlTreePrinter.class.getResourceAsStream("/config/json/PINT_LOGIN.json"),
             Config.class
         );
 
@@ -23,12 +22,18 @@ public class HtmlTreePrinter {
                 new BrowserType.LaunchOptions()
                     .setHeadless(true)
             );
-            Page page = browser.newPage();
+
+            BrowserContext context = browser.newContext(
+                new Browser.NewContextOptions()
+                    .setUserAgent(
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+                    )
+            );
+            Page page = context.newPage();
 
             OperationService operationService = new OperationService();
             operationService.scraping(page, siteName ,loginConfig);
             browser.close();
-
         }
     }
 

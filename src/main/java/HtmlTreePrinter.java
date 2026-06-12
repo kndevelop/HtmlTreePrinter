@@ -27,10 +27,10 @@ public class HtmlTreePrinter {
                 Config.class
             );
 
-        Config operateConfig = new ObjectMapper().readValue(
+        /*Config operateConfig = new ObjectMapper().readValue(
                 operateConfigStream,
                 Config.class
-            );
+            );*/
 
         try (Playwright playwright = Playwright.create()) {
 

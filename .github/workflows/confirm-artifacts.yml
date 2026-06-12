@@ -1,0 +1,11 @@
+name: List Artifacts
+on:
+  workflow_dispatch:
+jobs:
+  list-artifacts:
+    runs-on: ubuntu-latest
+    steps:
+     - name: Check GitHub CLI
+       run: |
+        which gh
+        gh --version

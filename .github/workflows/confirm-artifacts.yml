@@ -1,18 +1,51 @@
-name: List Artifacts
+name: Artifact Manager
+
 on:
   workflow_dispatch:
+    inputs:
+      action:
+        description: "実行内容"
+        required: true
+        type: choice
+        options:
+          - list
+          - clear
+
 jobs:
-  list-artifacts:
+  artifact-manager:
     runs-on: ubuntu-latest
+
+    permissions:
+      actions: write
+
     steps:
-     - name: Check GitHub CLI
-       run: |
-        which gh
-        gh --version
-        
-     - name: List artifacts
-       env:
-         GH_TOKEN: ${{ github.token }}
-       run: |
-         gh api repos/${{ github.repository }}/actions/artifacts \
-           --jq '.artifacts[] | [.id, .name, .size_in_bytes] | @tsv'
+      - name: List Artifacts
+        if: github.event.inputs.action == 'list'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "=== Artifact List ==="
+
+          gh api repos/${{ github.repository }}/actions/artifacts \
+            --paginate \
+            --jq '.artifacts[] | [.id, .name, .size_in_bytes, .created_at] | @tsv'
+
+      - name: Delete All Artifacts
+        if: github.event.inputs.action == 'clear'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "=== Delete Artifacts ==="
+
+          gh api repos/${{ github.repository }}/actions/artifacts \
+            --paginate \
+            --jq '.artifacts[].id' |
+          while read id
+          do
+            echo "Deleting artifact $id"
+            gh api \
+              --method DELETE \
+              repos/${{ github.repository }}/actions/artifacts/$id
+          done
+
+          echo "Completed."

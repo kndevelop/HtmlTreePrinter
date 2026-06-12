@@ -53,10 +53,6 @@ public class OperationService {
         String value,
         String selector
     ) {
-        System.out.println(page.url());
-        System.out.println(page.title());
-        System.out.println(page.content().contains("id_email"));
-        System.out.println(page.locator("#id_email").count());
         page.waitForSelector(selector);
         page.locator(selector)
             .fill(env != null

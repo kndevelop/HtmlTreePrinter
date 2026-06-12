@@ -11,10 +11,26 @@ public class HtmlTreePrinter {
 
         String siteName = args[0];
 
-        Config loginConfig = new ObjectMapper().readValue(
-            HtmlTreePrinter.class.getResourceAsStream("/config/json/PINT_LOGIN.json"),
-            Config.class
-        );
+        InputStream loginConfigStream = HtmlTreePrinter.class
+                .getResourceAsStream(
+                    "/config/json/" + siteName + "_LOGIN.json"
+                );
+        InputStream operateConfigStream = HtmlTreePrinter.class
+                .getResourceAsStream(
+                    "/config/json/" + siteName + "_OPERATE.json"
+                );
+
+        Config loginConfig = (loginConfigStream == null)
+            ? null
+            : new ObjectMapper().readValue(
+                loginConfigStream,
+                Config.class
+            );
+
+        Config operateConfig = new ObjectMapper().readValue(
+                operateConfigStream,
+                Config.class
+            );
 
         try (Playwright playwright = Playwright.create()) {
 
@@ -32,7 +48,12 @@ public class HtmlTreePrinter {
             Page page = context.newPage();
 
             OperationService operationService = new OperationService();
-            operationService.scraping(page, siteName ,loginConfig);
+
+            if(loginConfig != null) {
+                operationService.scraping(page, siteName, loginConfig);
+            }
+            operationService.scraping(page, siteName, operateConfig);
+
             browser.close();
         }
     }

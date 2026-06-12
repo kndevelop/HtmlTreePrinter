@@ -1,0 +1,14 @@
+{
+  "steps": [
+    {
+      "type": "navigate",
+      "url": "https://pokecazilla.com/pokemon/products/detail/21716"
+    },
+    {
+      "type": "extract",
+      "name": "ゲッコウガex[sv5a]090/066(SAR)",
+      "selector": "3000"
+    }
+
+  ]
+}

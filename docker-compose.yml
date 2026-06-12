@@ -4,7 +4,7 @@ services:
   postgres:
     build:
       context: .
-      dockerfile: Dockerfile.db
+      dockerfile: Dockerfile
     environment:
       POSTGRES_DB: ${DB_NAME:-scraper_db}
       POSTGRES_USER: ${DB_USER:-scraper}

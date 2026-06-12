@@ -1,9 +1,9 @@
 FROM gradle:8.5-jdk21 AS builder
 WORKDIR /app
-COPY . /app
+COPY . .
 RUN gradle build
 
-FROM eclipse-temurin:21-jre-alpine
+FROM mcr.microsoft.com/playwright/java:v1.54.0
 WORKDIR /app
 COPY --from=builder /app/build/libs/HtmlTreePrinter.jar /app/app.jar
 RUN mkdir -p /app/output

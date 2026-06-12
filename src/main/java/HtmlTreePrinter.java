@@ -52,7 +52,7 @@ public class HtmlTreePrinter {
             if(loginConfig != null) {
                 operationService.scraping(page, siteName, loginConfig);
             }
-            operationService.scraping(page, siteName, operateConfig);
+            //operationService.scraping(page, siteName, operateConfig);
 
             browser.close();
         }

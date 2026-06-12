@@ -16,21 +16,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:15-alpine
-        env:
-          POSTGRES_DB: scraper_db
-          POSTGRES_USER: scraper
-          POSTGRES_PASSWORD: password
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-
     env:
       AIRDO_LOGIN_ID: ${{ secrets.AIRDO_LOGIN_ID }}
       AIRDO_PASSWORD: ${{ secrets.AIRDO_PASSWORD }}
@@ -49,14 +34,15 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Wait for PostgreSQL
+      - name: Start Database and App with Docker Compose
         run: |
-          until pg_isready -h localhost -p 5432 -U scraper; do
-            echo "Waiting for PostgreSQL..."
-            sleep 2
-          done
+          docker-compose up --build --abort-on-container-exit
         env:
-          PGPASSWORD: password
+          DB_HOST: postgres
+          DB_PORT: 5432
+          DB_NAME: scraper_db
+          DB_USER: scraper
+          DB_PASSWORD: password
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew

@@ -42,7 +42,7 @@ jobs:
 
       - name: Start Database and App with Docker Compose
         run: |
-          docker-compose up --build --abort-on-container-exit
+          docker-compose up -d
         env:
           DB_HOST: postgres
           DB_PORT: 5432

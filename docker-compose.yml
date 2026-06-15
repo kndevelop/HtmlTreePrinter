@@ -25,6 +25,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    command: ["${SITE}"]
     environment:
       DB_HOST: postgres
       DB_PORT: 5432

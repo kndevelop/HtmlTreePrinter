@@ -50,10 +50,6 @@ jobs:
           DB_USER: scraper
           DB_PASSWORD: password
 
-      - name: Check containers
-        run: |
-          docker ps -a
-
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
@@ -87,27 +83,3 @@ jobs:
         with:
           name: screenshot
           path: after-login.png
-
-      - name: Verify Database Connection and Schema
-        run: |
-          # PostgreSQL クライアントをインストール
-          sudo apt-get update
-          sudo apt-get install -y postgresql-client
-
-          # コネクション確認
-          until PGPASSWORD=password psql -h localhost -p 5432 -U scraper -d scraper_db -c "\q"; do
-            echo "Waiting for PostgreSQL to become available..."
-            sleep 2
-          done
-
-          # 複数の確認クエリを実行
-          PGPASSWORD=password psql -h localhost -p 5432 -U scraper -d scraper_db << EOF
-            -- バージョン確認
-            SELECT 'PostgreSQL Version: ' || version();
-      
-            -- 接続確認
-            SELECT 'Connected successfully!' AS status;
-      
-            -- データベース情報確認
-            SELECT datname FROM pg_database WHERE datname = 'scraper_db';
-          EOF

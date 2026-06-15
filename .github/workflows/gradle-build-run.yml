@@ -50,6 +50,10 @@ jobs:
           DB_USER: scraper
           DB_PASSWORD: password
 
+      - name: Check containers
+        run: |
+          docker ps -a
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 

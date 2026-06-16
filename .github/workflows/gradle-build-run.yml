@@ -51,6 +51,26 @@ jobs:
           DB_PASSWORD: password
           SITE: ${{ github.event.inputs.site }}
 
+      - name: Create and populate test database
+        run: |
+          until pg_isready -h postgres -p 5432 -U scraper > /dev/null 2>&1; do
+            echo "Waiting for database..."
+            sleep 2
+          done
+          
+          PGPASSWORD=password psql -h postgres -U scraper -d scraper_db -c "
+          CREATE TABLE IF NOT EXISTS users (
+            user_id SERIAL PRIMARY KEY,
+            user_name VARCHAR(255) NOT NULL,
+            password VARCHAR(255) NOT NULL
+          );
+          
+          INSERT INTO users (user_name, password) VALUES
+          ('testuser1', 'password123'),
+          ('testuser2', 'password456'),
+          ('testuser3', 'password789');
+          "
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
@@ -70,7 +90,15 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y fonts-noto-cjk
           fc-cache -fv
-      
+
+      - name: Run build
+        run: ./gradlew build
+
+      - name: Clean up database - Drop users table
+        if: always()
+        run: |
+          PGPASSWORD=password psql -h postgres -U scraper -d scraper_db -c "DROP TABLE IF EXISTS users;"
+
       - name: Upload Screenshot
         uses: actions/upload-artifact@v4
         with:

@@ -1,5 +1,8 @@
+package HtmlTreePrinter;
+
 import java.sql.*;
 import java.util.*;
+import HtmlTreePrinter.User;
 
 public class UserRepository {
     private static final String URL = "jdbc:postgresql://localhost:5432/scraper_db";

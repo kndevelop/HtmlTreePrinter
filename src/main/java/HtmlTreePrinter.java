@@ -3,11 +3,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import HtmlTreePrinter.Config;
 import java.io.InputStream;
+import HtmlTreePrinter.UserRepository;
+import HtmlTreePrinter.User;
 
 @Slf4j
 public class HtmlTreePrinter {
 
     public static void main(String[] args) throws Exception {
+
+                // DBからテストユーザーデータを取得
+        List<User> testUsers = UserRepository.getAllUsers();
+        
+        if (testUsers.isEmpty()) {
+            log.warn("No test users found in database");
+        } else {
+            log.info("Found {} test users", testUsers.size());
+            for (User user : testUsers) {
+                log.info("User: {} (ID: {})", user.getUserName(), user.getUserId());
+            }
+        }
 
         String siteName = args[0];
 

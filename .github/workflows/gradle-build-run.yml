@@ -53,9 +53,18 @@ jobs:
 
       - name: Create and populate test database
         run: |
-          until pg_isready -h postgres -p 5432 -U scraper > /dev/null 2>&1; do
-            echo "Waiting for database..."
-            sleep 2
+          # 最大60秒間、5秒ごとにチェック
+          for i in {1..12}; do
+            if pg_isready -h postgres -p 5432 -U scraper > /dev/null 2>&1; then
+              echo "Database is ready!"
+              break
+            fi
+            echo "Waiting for database... ($i/12)"
+            sleep 5
+            if [ $i -eq 12 ]; then
+              echo "Database failed to start"
+              exit 1
+            fi
           done
           
           PGPASSWORD=password psql -h postgres -U scraper -d scraper_db -c "

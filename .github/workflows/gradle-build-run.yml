@@ -51,11 +51,10 @@ jobs:
           DB_PASSWORD: password
           SITE: ${{ github.event.inputs.site }}
 
-      - name: Create and populate test database
+      - name: Wait for database to be ready
         run: |
-          # 最大60秒間、5秒ごとにチェック
           for i in {1..12}; do
-            if pg_isready -h postgres -p 5432 -U scraper > /dev/null 2>&1; then
+            if pg_isready -h localhost -p 5432 -U scraper > /dev/null 2>&1; then
               echo "Database is ready!"
               break
             fi
@@ -63,11 +62,14 @@ jobs:
             sleep 5
             if [ $i -eq 12 ]; then
               echo "Database failed to start"
+              docker-compose logs postgres
               exit 1
             fi
           done
-          
-          PGPASSWORD=password psql -h postgres -U scraper -d scraper_db -c "
+
+      - name: Create and populate test database
+        run: |
+          PGPASSWORD=password psql -h localhost -p 5432 -U scraper -d scraper_db -c "
           CREATE TABLE IF NOT EXISTS users (
             user_id SERIAL PRIMARY KEY,
             user_name VARCHAR(255) NOT NULL,
@@ -103,7 +105,7 @@ jobs:
       - name: Clean up database - Drop users table
         if: always()
         run: |
-          PGPASSWORD=password psql -h postgres -U scraper -d scraper_db -c "DROP TABLE IF EXISTS users;"
+          PGPASSWORD=password psql -h localhost -p 5432 -U scraper -d scraper_db -c "DROP TABLE IF EXISTS users;"
 
       - name: Upload Screenshot
         uses: actions/upload-artifact@v4
